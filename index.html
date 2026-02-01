@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HostelComplaint | Login</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="login-page">
+    <div class="login-container">
+        <div class="login-box">
+            <div class="login-header">
+                <h1><i class="fas fa-building"></i> HostelComplaint</h1>
+                <p>Hostel Maintenance Management System</p>
+            </div>
+            
+            <div class="role-selector">
+                <div class="role-option active" data-role="student">
+                    <i class="fas fa-user-graduate"></i>
+                    <span>Student</span>
+                </div>
+                <div class="role-option" data-role="warden">
+                    <i class="fas fa-user-tie"></i>
+                    <span>Warden/Maintenance</span>
+                </div>
+            </div>
+            
+            <form id="login-form">
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" class="form-control" placeholder="Enter your username" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" class="form-control" placeholder="Enter your password" required>
+                </div>
+                
+                <button type="submit" class="btn btn-primary btn-block">Login</button>
+            </form>
+            
+            <div class="mt-2 text-center">
+                <p><small>Demo credentials: Student (john/123) | Warden (admin/123) | Staff (staff/123)</small></p>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/database.js"></script>
+    <script src="js/auth.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize database
+            initDatabase();
+            
+            // Role selector
+            const roleOptions = document.querySelectorAll('.role-option');
+            roleOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    roleOptions.forEach(o => o.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+            
+            // Login form
+            document.getElementById('login-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const username = document.getElementById('username').value;
+                const password = document.getElementById('password').value;
+                const role = document.querySelector('.role-option.active').dataset.role;
+                
+                const user = authenticateUser(username, password, role);
+                
+                if (user) {
+                    // Save current user to session
+                    sessionStorage.setItem('currentUser', JSON.stringify(user));
+                    
+                    // Redirect based on role
+                    if (role === 'student') {
+                        window.location.href = 'student-dashboard.html';
+                    } else if (role === 'warden') {
+                        window.location.href = 'warden-dashboard.html';
+                    } else if (role === 'staff') {
+                        window.location.href = 'warden-dashboard.html';
+                    }
+                } else {
+                    alert('Invalid username or password');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
